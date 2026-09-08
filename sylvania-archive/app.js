@@ -251,7 +251,7 @@ function renderHome() {
         </div>
       </div>
       ${body}
-      <footer class="site-footer">Compiled from public catalogues, collector lists and the Sylvanian Families wiki. Epoch has issued well over two thousand individual figures since 1985 — this archive covers manufactured family lines and their known members. Not affiliated with Epoch Co., Ltd.</footer>
+      <footer class="site-footer">Compiled from public catalogues, collector lists and the Sylvanian Families wiki. Named figures list a role, first-issue year and set number when one is published. Japan-only lines without given names are kept as families, not as invented dolls. Not affiliated with Epoch Co., Ltd.</footer>
     </div>
     ${sheetHtml()}
   `;
