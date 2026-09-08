@@ -186,14 +186,19 @@ function renderHome() {
   $("#app").innerHTML = `
     <div class="wrap">
       <header class="hero">
-        <p class="kicker">1985 — ${stats.yearMax}</p>
-        <h1>Sylvania Archive</h1>
-        <p class="lede">A searchable catalogue of Sylvanian Families figures — who was manufactured, which family they belong to, and when they first appeared.</p>
-        <dl class="stats">
-          <div class="stat"><dt>Figures</dt><dd>${stats.figures}</dd></div>
-          <div class="stat"><dt>Families</dt><dd>${stats.families}</dd></div>
-          <div class="stat"><dt>Species</dt><dd>${stats.species}</dd></div>
-        </dl>
+        <div class="hero-copy">
+          <p class="kicker">1985 — ${stats.yearMax}</p>
+          <h1>Sylvania Archive</h1>
+          <p class="lede">A searchable catalogue of Sylvanian Families figures — who was manufactured, which family they belong to, and when they first appeared.</p>
+          <dl class="stats">
+            <div class="stat"><dt>Figures</dt><dd>${stats.figures}</dd></div>
+            <div class="stat"><dt>Families</dt><dd>${stats.families}</dd></div>
+            <div class="stat"><dt>Species</dt><dd>${stats.species}</dd></div>
+          </dl>
+        </div>
+        <figure class="hero-photo">
+          <img src="./og.jpg" alt="A cream Sylvanian Families rabbit figure sitting in an open cream box" width="1200" height="630" />
+        </figure>
       </header>
       <div class="sticky">
         <div class="search-row">
