@@ -311,6 +311,12 @@ button:disabled { cursor: default; }
   font-variant-numeric: tabular-nums;
 }
 
+ul, ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -390,6 +396,7 @@ button:disabled { cursor: default; }
   border-radius: 999px;
   display: grid;
   place-items: center;
+  overflow: hidden;
   background: var(--moss);
   color: var(--forest);
   flex-shrink: 0;
