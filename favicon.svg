@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Sylvania Archive">
+  <rect width="16" height="16" rx="3" fill="#F4EFE4"/>
+  <rect x="11" y="3" width="2" height="4" fill="#3D5646"/>
+  <polygon points="1,8 8,2 15,8" fill="#3D5646"/>
+  <rect x="3" y="8" width="10" height="7" fill="#3D5646"/>
+  <rect x="7" y="11" width="2" height="4" fill="#F4EFE4"/>
+  <rect x="4" y="10" width="2" height="2" fill="#F4EFE4"/>
+  <rect x="10" y="10" width="2" height="2" fill="#F4EFE4"/>
+</svg>
