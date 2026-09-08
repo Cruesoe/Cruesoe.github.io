@@ -94,12 +94,14 @@ function pill(status) {
 function figureCard(f) {
   const role = state.data.roleLabel[f.role];
   const sub = f.named ? `${role} · ${f.surname}` : `${role} · ${f.familyName.replace(/ Family$/, "")}`;
+  const setLine = f.set ? `<p class="meta setline">set ${esc(f.set)}</p>` : "";
   return `<li>
     <article class="card">
       <button type="button" data-open="${f.id}">
         <div class="row">${mark(f.group)}<span class="year">${f.year}</span></div>
         <h3>${esc(f.displayName)}</h3>
         <p class="meta">${esc(sub)}</p>
+        ${setLine}
         <div class="foot">${pill(f.status)}<span class="year">${esc(f.species)}</span></div>
       </button>
       <a class="family-link" href="#/family/${encodeURIComponent(f.familyId)}">${esc(f.familyName)}</a>
@@ -339,7 +341,8 @@ function paintSheet() {
         <div><dt>${f.yearUK && f.yearUK !== f.year ? "UK / West" : "Era"}</dt><dd>${f.yearUK && f.yearUK !== f.year ? f.yearUK : f.era}</dd></div>
         <div><dt>Species</dt><dd>${esc(f.species)}</dd></div>
         <div><dt>Status</dt><dd>${pill(f.status)}</dd></div>
-        ${f.set ? `<div style="grid-column:1/-1"><dt>Set</dt><dd style="font-family:var(--font-mono)">${esc(f.set)}</dd></div>` : ""}
+        <div><dt>Role</dt><dd>${esc(state.data.roleLabel[f.role])}</dd></div>
+        ${`<div><dt>Set</dt><dd style="font-family:var(--font-mono)">${esc(f.set || "—")}</dd></div>`}
       </dl>
       ${notes ? `<p class="notes">${esc(notes)}</p>` : ""}
       <a class="cta" href="#/family/${encodeURIComponent(f.familyId)}" data-close>View ${esc(f.familyName)}</a>
