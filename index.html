@@ -3,23 +3,58 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sylvania Archive</title>
-    <meta
-      name="description"
-      content="A searchable catalogue of Sylvanian Families figures — manufactured families, named characters, and the years they first appeared, 1985 to present."
-    />
-    <meta name="theme-color" content="#F4EFE4" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap"
-    />
-    <link rel="stylesheet" href="./styles.css" />
+    <title>Cruesoe</title>
+    <meta name="description" content="Cruesoe’s GitHub homepage." />
+    <style>
+      :root {
+        --bg: #f7f5f2;
+        --ink: #1c1814;
+        --muted: #6b6258;
+        --line: #d9d0c2;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        font: 16px/1.6 system-ui, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+      }
+      main {
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 4rem 1.5rem;
+      }
+      h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.75rem;
+      }
+      p { margin: 0 0 1rem; color: var(--muted); }
+      a { color: var(--ink); }
+      .hint {
+        margin-top: 2.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+        font-size: 0.875rem;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.85em;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
-    <script src="./app.js" type="module"></script>
+    <main>
+      <h1>Cruesoe</h1>
+      <p>This is your GitHub homepage. Replace this file to make it yours.</p>
+      <p><a href="/sylvania-archive/">Sylvania Archive</a> — searchable catalogue of Sylvanian Families figures.</p>
+      <p class="hint">
+        Edit <code>index.html</code> in the
+        <a href="https://github.com/Cruesoe/Cruesoe.github.io">Cruesoe.github.io</a>
+        repository. The catalogue lives in the <code>sylvania-archive/</code> folder.
+      </p>
+    </main>
   </body>
 </html>

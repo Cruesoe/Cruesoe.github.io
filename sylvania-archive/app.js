@@ -441,7 +441,7 @@ function render() {
 }
 
 async function main() {
-  const res = await fetch("./catalog.json");
+  const res = await fetch(new URL("catalog.json", import.meta.url));
   state.data = await res.json();
   window.addEventListener("hashchange", render);
   window.addEventListener("keydown", (e) => {

@@ -1,7 +1,7 @@
-# Sylvania Archive
+# cruesoe.github.io
 
-A searchable catalogue of Sylvanian Families figures — who was manufactured, which family they belong to, and when they first appeared (1985–present).
+Your GitHub homepage: **https://cruesoe.github.io/**
 
-**Live site:** https://cruesoe.github.io/
+Edit `index.html` to change this page.
 
-Not affiliated with Epoch Co., Ltd.
+The Sylvanian Families catalogue is at **https://cruesoe.github.io/sylvania-archive/** (`sylvania-archive/` in this repo).
