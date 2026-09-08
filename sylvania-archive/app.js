@@ -9,6 +9,7 @@ const state = {
   group: "all",
   role: "all",
   status: "all",
+  set: "",
   sort: "year-desc",
   view: "figures",
   filtersOpen: false,
@@ -34,6 +35,38 @@ function matchesQuery(hay, query) {
   return tokens.every((t) => h.includes(t));
 }
 
+function normalizeSet(value) {
+  return String(value).toLowerCase().replace(/[\s\-_/#]/g, "");
+}
+
+function setHaystack(set) {
+  if (!set) return "";
+  return `set ${set} ${set.replaceAll("-", " ")} ${set.replaceAll("/", " ")}`;
+}
+
+function setCodeMatches(figureSet, filterSet) {
+  const needle = normalizeSet(filterSet);
+  if (!needle) return true;
+  if (!figureSet) return false;
+  if (normalizeSet(figureSet).includes(needle)) return true;
+  return String(figureSet)
+    .split(/[/,]/)
+    .some((part) => normalizeSet(part).includes(needle));
+}
+
+function uniqueSets() {
+  const codes = new Set();
+  for (const f of state.data.figures) if (f.set) codes.add(f.set);
+  return [...codes].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+}
+
+function familySetHay(familyId) {
+  return state.data.figures
+    .filter((f) => f.familyId === familyId)
+    .map((f) => setHaystack(f.set))
+    .join(" ");
+}
+
 function filterFigures() {
   const { figures, roleLabel } = state.data;
   const q = state.query.trim();
@@ -42,9 +75,10 @@ function filterFigures() {
     if (state.group !== "all" && f.group !== state.group) return false;
     if (state.role !== "all" && f.role !== state.role) return false;
     if (state.status !== "all" && f.status !== state.status) return false;
+    if (!setCodeMatches(f.set, state.set)) return false;
     if (!q) return true;
     return matchesQuery(
-      `${f.displayName} ${f.givenName} ${f.surname} ${f.familyName} ${f.species} ${f.group} ${roleLabel[f.role]} ${f.year} ${f.set ?? ""} ${f.notes ?? ""}`,
+      `${f.displayName} ${f.givenName} ${f.surname} ${f.familyName} ${f.species} ${f.group} ${roleLabel[f.role]} ${f.year} ${setHaystack(f.set)} ${f.notes ?? ""}`,
       q,
     );
   });
@@ -60,8 +94,12 @@ function filterFamilies() {
     if (state.group !== "all" && fam.group !== state.group) return false;
     if (state.status !== "all" && fam.status !== state.status) return false;
     if (state.role !== "all" && !figures.some((f) => f.familyId === fam.id && f.role === state.role)) return false;
+    if (state.set.trim() && !figures.some((f) => f.familyId === fam.id && setCodeMatches(f.set, state.set))) return false;
     if (!q) return true;
-    return matchesQuery(`${fam.name} ${fam.surname} ${fam.species} ${fam.group} ${fam.year} ${fam.notes ?? ""}`, q);
+    return matchesQuery(
+      `${fam.name} ${fam.surname} ${fam.species} ${fam.group} ${fam.year} ${fam.notes ?? ""} ${familySetHay(fam.id)}`,
+      q,
+    );
   });
   list.sort((a, b) => {
     if (state.sort === "year-asc") return a.year - b.year || a.name.localeCompare(b.name);
@@ -94,17 +132,18 @@ function pill(status) {
 function figureCard(f) {
   const role = state.data.roleLabel[f.role];
   const sub = f.named ? `${role} · ${f.surname}` : `${role} · ${f.familyName.replace(/ Family$/, "")}`;
-  const setLine = f.set ? `<p class="meta setline">set ${esc(f.set)}</p>` : "";
+  const setBtn = f.set
+    ? `<button type="button" class="set-filter" data-filter-set="${esc(f.set)}" aria-label="Filter by set ${esc(f.set)}">set ${esc(f.set)}</button>`
+    : `<span></span>`;
   return `<li>
     <article class="card">
       <button type="button" data-open="${f.id}">
         <div class="row">${mark(f.group)}<span class="year">${f.year}</span></div>
         <h3>${esc(f.displayName)}</h3>
         <p class="meta">${esc(sub)}</p>
-        ${setLine}
         <div class="foot">${pill(f.status)}<span class="year">${esc(f.species)}</span></div>
       </button>
-      <a class="family-link" href="#/family/${encodeURIComponent(f.familyId)}">${esc(f.familyName)}</a>
+      <div class="card-links">${setBtn}<a class="family-link" href="#/family/${encodeURIComponent(f.familyId)}">${esc(f.familyName)}</a></div>
     </article>
   </li>`;
 }
@@ -129,7 +168,13 @@ function esc(s) {
 function emptyHtml() {
   return `<div class="empty">
     <h2>No figures match</h2>
-    <p>${state.query ? `Nothing found for “${esc(state.query)}”. Try a family name, species or year.` : "Clear a filter to see the catalogue."}</p>
+    <p>${
+      state.query
+        ? `Nothing found for “${esc(state.query)}”. Try a family name, species, year or set number.`
+        : state.set.trim()
+          ? `No figures listed in set ${esc(state.set)}.`
+          : "Clear a filter to see the catalogue."
+    }</p>
     <button type="button" data-reset>Reset catalogue</button>
   </div>`;
 }
@@ -138,7 +183,9 @@ function renderHome() {
   const figures = filterFigures();
   const families = filterFamilies();
   const { stats, eras, groups, roles, roleLabel } = state.data;
-  const active = [state.era, state.group, state.role, state.status].filter((v) => v !== "all").length;
+  const sets = uniqueSets();
+  const active =
+    [state.era, state.group, state.role, state.status].filter((v) => v !== "all").length + (state.set.trim() ? 1 : 0);
 
   let body = "";
   if (state.view === "figures") {
@@ -204,13 +251,14 @@ function renderHome() {
         <div class="search-row">
           <div class="search">
             <span class="icon">${searchSvg()}</span>
-            <input id="q" type="search" placeholder="Search names, families, species, years…" aria-label="Search the catalogue" value="${esc(state.query)}" />
+            <input id="q" type="search" placeholder="Search names, families, species, years, sets…" aria-label="Search the catalogue" value="${esc(state.query)}" />
             ${state.query ? `<button class="clear" type="button" data-clear aria-label="Clear search">${xSvg()}</button>` : ""}
           </div>
           <button class="icon-btn ${state.filtersOpen || active ? "active" : ""}" type="button" data-filters aria-label="Toggle filters">${slidersSvg()}${active ? `<span class="badge-count">${active}</span>` : ""}</button>
         </div>
         <div class="chips">
           ${["all", ...eras].map((era) => `<button type="button" class="chip ${state.era === era ? "on" : ""}" data-era="${era}">${era === "all" ? "All years" : era}</button>`).join("")}
+          ${state.set.trim() ? `<button type="button" class="chip on" data-clear-set aria-label="Clear set filter ${esc(state.set)}">Set ${esc(state.set)} ${xSvg()}</button>` : ""}
         </div>
         <div class="filters ${state.filtersOpen ? "open" : ""}">
           <label>Species
@@ -233,6 +281,10 @@ function renderHome() {
               <option value="discontinued" ${state.status === "discontinued" ? "selected" : ""}>Vintage</option>
             </select>
           </label>
+          <label>Set
+            <input data-set list="set-codes" placeholder="e.g. 4133" value="${esc(state.set)}" autocomplete="off" spellcheck="false" aria-label="Filter by set number" />
+          </label>
+          <datalist id="set-codes">${sets.map((s) => `<option value="${esc(s)}"></option>`).join("")}</datalist>
         </div>
         <div class="toolbar">
           <div class="tabs">
@@ -415,6 +467,20 @@ function bindHome() {
     state.status = e.target.value;
     render();
   });
+  const setInput = document.querySelector("[data-set]");
+  setInput?.addEventListener("input", (e) => {
+    state.set = e.target.value;
+    render();
+    const el = document.querySelector("[data-set]");
+    if (el) {
+      el.focus();
+      el.setSelectionRange(state.set.length, state.set.length);
+    }
+  });
+  document.querySelector("[data-clear-set]")?.addEventListener("click", () => {
+    state.set = "";
+    render();
+  });
   document.querySelector("[data-sort]")?.addEventListener("change", (e) => {
     state.sort = e.target.value;
     render();
@@ -425,8 +491,16 @@ function bindHome() {
     state.group = "all";
     state.role = "all";
     state.status = "all";
+    state.set = "";
     render();
   });
+  document.querySelectorAll("[data-filter-set]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      state.set = btn.getAttribute("data-filter-set") || "";
+      state.filtersOpen = true;
+      render();
+    }),
+  );
   document.querySelectorAll("[data-open]").forEach((btn) =>
     btn.addEventListener("click", () => openFigure(btn.getAttribute("data-open"))),
   );

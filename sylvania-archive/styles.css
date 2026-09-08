@@ -264,11 +264,18 @@ button:disabled { cursor: default; }
   background: var(--surface);
   color: var(--ink-soft);
   box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 .chip.on {
   background: var(--forest);
   color: var(--surface);
   box-shadow: none;
+}
+.chip svg {
+  width: 0.85rem;
+  height: 0.85rem;
 }
 
 .filters {
@@ -283,6 +290,13 @@ button:disabled { cursor: default; }
 }
 .filters.open { display: grid; }
 
+@media (min-width: 640px) {
+  .filters.open { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .filters.open { grid-template-columns: repeat(4, 1fr); }
+}
+
 .filters label {
   display: flex;
   flex-direction: column;
@@ -292,7 +306,7 @@ button:disabled { cursor: default; }
   color: var(--muted);
 }
 
-.filters select, .toolbar select {
+.filters select, .filters input, .toolbar select {
   height: 2.75rem;
   border: 0;
   border-radius: 0.5rem;
@@ -302,6 +316,16 @@ button:disabled { cursor: default; }
   color: var(--ink);
   background: var(--bg);
   box-shadow: 0 0 0 1px var(--line);
+}
+
+.filters input {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.filters input:focus, .filters select:focus, .toolbar select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--forest) 40%, transparent);
 }
 
 .toolbar {
@@ -413,14 +437,33 @@ ul, ol {
   align-items: center;
   gap: 0.5rem;
 }
-.card .family-link {
+.card-links {
   margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.card .family-link {
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--forest);
   text-decoration: none;
 }
 .card .family-link:hover { text-decoration: underline; }
+.set-filter {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--subtle);
+}
+.set-filter:hover {
+  color: var(--forest);
+  text-decoration: underline;
+}
 
 .mark {
   width: 2.5rem;
