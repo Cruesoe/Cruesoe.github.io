@@ -283,13 +283,17 @@ function renderFamily(familyId) {
       </header>
       ${fam.notes ? `<p class="lede">${esc(fam.notes)}</p>` : ""}
       <h2 style="margin-top:2.5rem;font-size:1.25rem">${members.length} figure${members.length === 1 ? "" : "s"}</h2>
-      <ul class="member-list">
+      ${
+        members.length === 0
+          ? `<p class="lede">No named figures are listed for this line yet. Public catalogues describe the family by role only.</p>`
+          : `<ul class="member-list">
         ${members
           .map(
             (f) => `<li><button type="button" data-open="${f.id}"><div><p>${esc(f.displayName)}</p><p class="role">${esc(state.data.roleLabel[f.role])}</p></div><div class="year">${f.year}${f.set ? `<div>${esc(f.set)}</div>` : ""}</div></button></li>`,
           )
           .join("")}
-      </ul>
+      </ul>`
+      }
     </div>
     ${sheetHtml()}
   `;
